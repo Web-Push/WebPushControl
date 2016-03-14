@@ -26,6 +26,9 @@
 <script type="text/javascript" src="js/loading.data.js"></script>
 <script type="text/javascript" src="js/demo.util.js"></script>
 
+<!-- Include manifest file in the page -->
+<link rel="manifest" href="manifest.json">
+
 <!-- initialize -->
 <script type="text/javascript">
 
@@ -124,10 +127,6 @@ jQuery(document).ready(
 			$("#idTable2").Unload(); // 表を削除
 		});
 
-		//jQuery("#toolbar").jqGrid('navButtonAdd','#toolbar_toppager',{caption:"Select All", onClickButton:function(){ 
-		//if($('.cbox').is(":checked")){ jQuery("#toolbar").jqGrid('resetSelection'); }else{$('.cbox').trigger('click').attr('checked', true);}
-		//} });
-
 	});
 
 function getKiiObject(dataList) {
@@ -184,9 +183,6 @@ function setTable(dataList) {
 		loadonce : true,
 		viewrecords: true				//footer
 	}).hideCol('cb');
-	
-	//$("#idTable2").find("tr:odd").addClass("odd");
-	$("#idTable2").find("tr:even").addClass("even");
 	
 	return jg;
 }

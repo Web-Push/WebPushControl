@@ -103,22 +103,22 @@ function postRequest() {
 	var xhr = new XMLHttpRequest();
 	//var fd  = new FormData();
 
-	// データを FormData オブジェクトに投入します
+	// データ設定
 	//for(name in data) {
 	//	fd.append(name, data[name]);
 	//}
 
-	// データが正常に送信された場合に行うことを定義します
+	// データ正常送信時
 	xhr.addEventListener('load', function(event) {
 		alert('Yeah! Data sent and response loaded.');
 	});
 
-	// エラーが発生した場合に行うことを定義します
+	// エラー発生時
 	xhr.addEventListener('error', function(event) {
 		alert('Something goes wrong. please try again.');
 	});
 
-	// リクエストをセットアップします
+	// リクエスト準備
 	xhr.open('POST', requestUrl, true);
 	//void open(
 	//DOMString method,
@@ -137,6 +137,7 @@ function postRequest() {
 	xhr.send(sendMessage);
 	console.log(xhr);
 }
+
 
 /* message pattern
   {
