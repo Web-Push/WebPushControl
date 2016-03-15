@@ -41,7 +41,7 @@ function postRequest(cellList) {
 
 	// application/json "to"
 	var sendData = '{"to":[';
-	// データ設定。endpointのURL別に送信データオブジェクトを作成する必要があります。（未実装：現状、すべてurlGCM宛）
+	//TODO:データ設定。endpointのURL別に送信データオブジェクトを作成する必要があります。（未実装：現状、すべてurlGCM宛）
 	$.each(cellList, function(i, elem) {
 		console.log(elem);
 		var all=elem;
