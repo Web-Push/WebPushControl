@@ -66,15 +66,16 @@ jQuery(document).ready(
 		$('#push-sel-rows').on('click', function(){
 			// 選択行の行IDを配列で取得(表示しているページ内のみ）
 			var selrows = jQuery('#idTable2').getGridParam('selarrrow');
-			var idList = new Array();
+			var cellList = new Array();
 			for (var i = 0; i < selrows.length; i++) {
 				var row = $('#idTable2').getRowData(selrows[i]);
 				//console.log(row);
-				idList.push(row.endpoint);
+				cellList.push(row.endpoint);
 			}
-			//confirm(idList);
-			//postRequest();
-			doPushMethod();
+			confirm(cellList);
+			// test
+			postRequest();
+			//doPushMethod();
 			return false;
 		});
 
