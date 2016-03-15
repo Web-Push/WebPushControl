@@ -2,6 +2,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Content-Type">
+<meta http-equiv="Access-Control-Allow-Origin" content="*">
 <title>ID Selector [notification]</title>
 
 <!-- demo page styling only -->
@@ -71,7 +73,8 @@ jQuery(document).ready(
 				idList.push(row.endpoint);
 			}
 			//confirm(idList);
-			postRequest();
+			//postRequest();
+			doPushMethod();
 			return false;
 		});
 
@@ -127,6 +130,10 @@ jQuery(document).ready(
 			$("#idTable2").Unload(); // 表を削除
 		});
 
+		//jQuery("#toolbar").jqGrid('navButtonAdd','#toolbar_toppager',{caption:"Select All", onClickButton:function(){ 
+		//if($('.cbox').is(":checked")){ jQuery("#toolbar").jqGrid('resetSelection'); }else{$('.cbox').trigger('click').attr('checked', true);}
+		//} });
+
 	});
 
 function getKiiObject(dataList) {
@@ -181,9 +188,24 @@ function setTable(dataList) {
 		hoverrows : false,
 		//gridview : true,
 		loadonce : true,
+		//loadComplete : function () {
+		//	// div_dummy 枠の横幅を取得してグリッドに設定する
+		//    $("#idTable2").jqGrid('setGridWidth', $(div_table).width(), true);
+		//},
+		//gridComplete: function () {	// tr:even
+		//	$('tbody = tr:even', this).addClass('ui-row-even');
+		//},
 		viewrecords: true				//footer
 	}).hideCol('cb');
 	
+	//$("#idTable2").find("tr:odd").addClass("odd");
+	$("#idTable2").find("tr:even").addClass("even");
+	
+	//var allrows = jQuery('#idTable2').getGridParam();
+	//var allrows = jQuery('#idTable2').getRowData();
+	//$.each(allrows, function(index, elem) {
+	//	console.log(elem);
+	//});
 	return jg;
 }
 

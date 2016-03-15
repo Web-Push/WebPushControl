@@ -1,0 +1,17 @@
+{
+  "name": "demosample",
+  "short_name": "sample",
+  "permissions": [
+    "https://www.google.com/"
+  ],
+  "icons": [{
+    "src": "Pushico.png",
+    "sizes": "160x140",
+    "type": "image/png"
+  }],
+  "start_url": "./index.html",
+  "display": "standalone",
+  "gcm_sender_id": "621173627185",	// project number
+  // "gcm_user_visible_only": true	// for old version
+}
+
