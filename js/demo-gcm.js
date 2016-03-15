@@ -85,7 +85,7 @@ function postRequest(cellList) {
 	// リクエスト準備
 	xhr.open('POST', urlGCM, true);
 	xhr.setRequestHeader('Authorization', 'key=AIzaSyBLI0jtHooTeBusVBXWJYgDqDGTNp_L7Jk');
-	xhr.setRequestHeader('Access-Control-Allow-Origin','http://web-push.github.io/');	// この指定により、サーバ動作時には自動的にOriginのURLを設定（local以外）
+	xhr.setRequestHeader('Access-Control-Allow-Origin','http://web-push.github.io/WebPushControl/');	// この指定により、サーバ動作時には自動的にOriginのURLを設定（local以外）
 	xhr.setRequestHeader('Access-Control-Allow-Headers','Content-Type;charset=UTF-8');
 	xhr.setRequestHeader('Access-Control-Request-Methods','POST');
 	xhr.setRequestHeader('Access-Control-Allow-Methods','OPTIONS');
