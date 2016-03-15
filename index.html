@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="Content-Type">
-<meta http-equiv="Access-Control-Allow-Origin" content="*">
+<meta http-equiv="Access-Control-Allow-Origin" content="http://web-push.github.io/WebPushControl/">
 <title>ID Selector [notification]</title>
 
 <!-- demo page styling only -->
@@ -69,13 +69,13 @@ jQuery(document).ready(
 			var cellList = new Array();
 			for (var i = 0; i < selrows.length; i++) {
 				var row = $('#idTable2').getRowData(selrows[i]);
-				//console.log(row);
 				cellList.push(row.endpoint);
 			}
-			confirm(cellList);
-			// test
-			postRequest();
-			//doPushMethod();
+			//confirm(cellList);
+			if (cellList.length > 0) {
+				postRequest(cellList);
+				//doPushMethod();
+			}
 			return false;
 		});
 
@@ -141,11 +141,9 @@ function getKiiObject(dataList) {
 	var coldata = [];
 	$.each(dataList, function(i, elem) {
 		var obj = new Object();
-		//console.log(elem[KII_KEY_USR_ID]);
 		obj[KII_KEY_USR_ID] = elem[KII_KEY_USR_ID];
 		obj[KII_KEY_SERVICE_URL] = elem[KII_KEY_SERVICE_URL];
 		obj[KII_KEY_ENDPOINT] = elem[KII_KEY_ENDPOINT];
-		//console.log(obj);
 		coldata.push(obj);
 	});
 	return coldata;
@@ -189,24 +187,12 @@ function setTable(dataList) {
 		hoverrows : false,
 		//gridview : true,
 		loadonce : true,
-		//loadComplete : function () {
-		//	// div_dummy 枠の横幅を取得してグリッドに設定する
-		//    $("#idTable2").jqGrid('setGridWidth', $(div_table).width(), true);
-		//},
-		//gridComplete: function () {	// tr:even
-		//	$('tbody = tr:even', this).addClass('ui-row-even');
-		//},
 		viewrecords: true				//footer
 	}).hideCol('cb');
 	
 	//$("#idTable2").find("tr:odd").addClass("odd");
-	$("#idTable2").find("tr:even").addClass("even");
+	//$("#idTable2").find("tr:even").addClass("even");
 	
-	//var allrows = jQuery('#idTable2').getGridParam();
-	//var allrows = jQuery('#idTable2').getRowData();
-	//$.each(allrows, function(index, elem) {
-	//	console.log(elem);
-	//});
 	return jg;
 }
 

@@ -6,11 +6,9 @@ var formAction = "https://android.googleapis.com/gcm/send";
 var registrationId = 'dHBA1XuzTCQ:APA91bE7b4PT9di5YvcVyH-3gO0LY2HwN8FtI3zd23Ulp_dlXuE54Ryvqw6Yl684tcXgasoJSHEod2up3UT63kItVdwrZHhYb4ayyAYwi3XWdWI_1_dqqCzBfnlGJgSEbz9fgL1pNPVj';
 var postData = '{\"registration_ids\":[\"dHBA1XuzTCQ:APA91bE7b4PT9di5YvcVyH-3gO0LY2HwN8FtI3zd23Ulp_dlXuE54Ryvqw6Yl684tcXgasoJSHEod2up3UT63kItVdwrZHhYb4ayyAYwi3XWdWI_1_dqqCzBfnlGJgSEbz9fgL1pNPVj\"]}';
 
+// ポイント：-xを指定しないと、curl実施しても、Push windowを表示しない
+// HTTPの場合、trickyな手段で、proxyを指定することができますが、HTTPSの場合は、難しいらしいです。つまり、curlの通りに、実現はできないかも。
 
-// ポイント：-xを指定しないと、curl実施しても、Pushを表示しない
-// proxyを指定する方法はあるが、Http用のtrickyな方法であり、HTTPSには使用できない。別の方法を考える
-
-//var settingAction = "https://android.googleapis.com/gcm/send/dHBA1XuzTCQ:APA91bE7b4PT9di5YvcVyH-3gO0LY2HwN8FtI3zd23Ulp_dlXuE54Ryvqw6Yl684tcXgasoJSHEod2up3UT63kItVdwrZHhYb4ayyAYwi3XWdWI_1_dqqCzBfnlGJgSEbz9fgL1pNPVj";
 
 // curl
 // -d POSTリクエストとしてフォームを送信する。パラメータPARAMは「"value=name"」の形式で指定する
@@ -24,9 +22,11 @@ var postData = '{\"registration_ids\":[\"dHBA1XuzTCQ:APA91bE7b4PT9di5YvcVyH-3gO0
 
 //curl --header "Authorization: key=AIzaSyBLI0jtHooTeBusVBXWJYgDqDGTNp_L7Jk" --header Content-Type:"application/json" https://android.googleapis.com/gcm/send -d "{\"registration_ids\":[\"d2URneWVTsE:APA91bFJgphoxDQ_xeLU0d84Xflp0tVz7qS4L4IZbqFUB9EcTvUMEnA6g9oyw-nrmJT21aJrObDjFSlVdKrl7EASsj3jwT6Vqj-tgzcEVAIdhU8UQJBCk_ZDbaklDhtjHfnxd6EMY5KK\"]}"
 
+var settingAction = "https://android.googleapis.com/gcm/send/dHBA1XuzTCQ:APA91bE7b4PT9di5YvcVyH-3gO0LY2HwN8FtI3zd23Ulp_dlXuE54Ryvqw6Yl684tcXgasoJSHEod2up3UT63kItVdwrZHhYb4ayyAYwi3XWdWI_1_dqqCzBfnlGJgSEbz9fgL1pNPVj";
 var urlGCM = 'https://android.googleapis.com/gcm/send';
 
-function postRequest() {
+
+function postRequest(cellList) {
 	var urlGCM = 'https://android.googleapis.com/gcm/send';
 	var registrationId = 'd2URneWVTsE:APA91bFJgphoxDQ_xeLU0d84Xflp0tVz7qS4L4IZbqFUB9EcTvUMEnA6g9oyw-nrmJT21aJrObDjFSlVdKrl7EASsj3jwT6Vqj-tgzcEVAIdhU8UQJBCk_ZDbaklDhtjHfnxd6EMY5KK';
 	var sendMessage = new String('{"\registration_ids\":\"d2URneWVTsE:APA91bFJgphoxDQ_xeLU0d84Xflp0tVz7qS4L4IZbqFUB9EcTvUMEnA6g9oyw-nrmJT21aJrObDjFSlVdKrl7EASsj3jwT6Vqj-tgzcEVAIdhU8UQJBCk_ZDbaklDhtjHfnxd6EMY5KK\"}');
@@ -39,10 +39,19 @@ function postRequest() {
 	var xhr = new XMLHttpRequest();
 	var fd  = new FormData();
 
-	// データ設定
-	//for(name in data) {
-	//	fd.append(name, data[name]);
-	//}
+	// application/json "to"
+	var sendData = '{"to":[';
+	// データ設定。endpointのURL別に送信データオブジェクトを作成する必要があります。（未実装：現状、すべてurlGCM宛）
+	$.each(cellList, function(i, elem) {
+		console.log(elem);
+		var all=elem;
+		//var endpoint = all.split('/');
+		// when endpoint == urlGCM 
+		var rId = all.split("/").pop();
+		if (i > 0) { sendData = sendData + ',';}
+		sendData = sendData + '"' + rId + '"';
+	});
+	sendData = sendData + ']}';	// delete last ,
 
 	//fd.append('registration_ids', 'dHBA1XuzTCQ:APA91bE7b4PT9di5YvcVyH-3gO0LY2HwN8FtI3zd23Ulp_dlXuE54Ryvqw6Yl684tcXgasoJSHEod2up3UT63kItVdwrZHhYb4ayyAYwi3XWdWI_1_dqqCzBfnlGJgSEbz9fgL1pNPVj');
 	
@@ -56,7 +65,7 @@ function postRequest() {
 		alert('Something goes wrong. please try again.');
 	});
 
-	// analysis for preflght request + send message
+	// for preflight request
     //xhr.open('POST', endpoint, true);
 	//xhr.setRequestHeader('Authorization', 'AIzaSyBLI0jtHooTeBusVBXWJYgDqDGTNp_L7Jk');
 	//xhr.setRequestHeader('Access-Control-Allow-Origin','*');	// この指定により、サーバ動作時には自動的にOriginのURLを設定（local以外）
@@ -71,34 +80,30 @@ function postRequest() {
 	//		}
 	//	}
 	//};
-	//xhr.send(postData);
+	//xhr.send(null);
 
 	// リクエスト準備
 	xhr.open('POST', urlGCM, true);
-		//void open(
-		//DOMString method,
-		//DOMString url,
-		//optional boolean async,	//default
-		//optional DOMString user,
-		//optional DOMString password
-		//);
 	xhr.setRequestHeader('Authorization', 'key=AIzaSyBLI0jtHooTeBusVBXWJYgDqDGTNp_L7Jk');
-	xhr.setRequestHeader('Access-Control-Allow-Origin','*');	// この指定により、サーバ動作時には自動的にOriginのURLを設定（local以外）
+	xhr.setRequestHeader('Access-Control-Allow-Origin','http://web-push.github.io/');	// この指定により、サーバ動作時には自動的にOriginのURLを設定（local以外）
 	xhr.setRequestHeader('Access-Control-Allow-Headers','Content-Type;charset=UTF-8');
 	xhr.setRequestHeader('Access-Control-Request-Methods','POST');
 	xhr.setRequestHeader('Access-Control-Allow-Methods','OPTIONS');
 	xhr.setRequestHeader('Content-Type', 'application/json');	// text/plain
 	//xhr.setRequestHeader('Content-Type', 'application/json');	// text/plain
 	//xhr.setRequestHeader('Origin', '*');
-	//xhr.withCredentials = true;
+	xhr.withCredentials = true;
 	// 送信処理
-	xhr.send(postData);
+	xhr.send(sendData);
 }
 
 /** テスト用仮
+ * Call Push API method
+ * @param {string} methodName
+ * @param {Object} arguments
  */
  
-var methodName = 'testName';
+var methodName = 'testNema';
 var arguments = 'dHBA1XuzTCQ:APA91bE7b4PT9di5YvcVyH-3gO0LY2HwN8FtI3zd23Ulp_dlXuE54Ryvqw6Yl684tcXgasoJSHEod2up3UT63kItVdwrZHhYb4ayyAYwi3XWdWI_1_dqqCzBfnlGJgSEbz9fgL1pNPVj';
 function doPushMethod() {
 	try {
@@ -129,10 +134,9 @@ function doPushMethod() {
 			}
 		};
 		xhr.onerror = function () {
-			console.log('Pushwoosh response status code to %s call in not 200', methodName)
+			console.log('Push response status code to %s call in not 200', methodName)
 		};
 	} catch (e) {
 		console.log('Exception while %s the device: %s', methodName, e);
 	}
 }
-
