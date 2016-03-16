@@ -25,7 +25,10 @@ var postData = '{\"registration_ids\":[\"dHBA1XuzTCQ:APA91bE7b4PT9di5YvcVyH-3gO0
 var settingAction = "https://android.googleapis.com/gcm/send/dHBA1XuzTCQ:APA91bE7b4PT9di5YvcVyH-3gO0LY2HwN8FtI3zd23Ulp_dlXuE54Ryvqw6Yl684tcXgasoJSHEod2up3UT63kItVdwrZHhYb4ayyAYwi3XWdWI_1_dqqCzBfnlGJgSEbz9fgL1pNPVj";
 var urlGCM = 'https://android.googleapis.com/gcm/send';
 
-
+// XMLHttpRequest を使用すると、通信を行うときに、preflight処理を行うことがあります。
+// 今回のPOST仕様で追加するヘッダの内容の場合には、preflight通信を行いますが、このとき、Demo環境では、HTTP:405エラーです。
+// 想定原因は、POST先が、preflightに非対応の可能性、および、Demoのドメインがクロスドメインアクセス仕様ではないこと、です。
+// そのため、Demo環境で動作するには、標準のXMLHttpRequestでの実装は、行わないこととします。
 function postRequest(cellList) {
 	var urlGCM = 'https://android.googleapis.com/gcm/send';
 	var registrationId = 'd2URneWVTsE:APA91bFJgphoxDQ_xeLU0d84Xflp0tVz7qS4L4IZbqFUB9EcTvUMEnA6g9oyw-nrmJT21aJrObDjFSlVdKrl7EASsj3jwT6Vqj-tgzcEVAIdhU8UQJBCk_ZDbaklDhtjHfnxd6EMY5KK';
@@ -85,26 +88,19 @@ function postRequest(cellList) {
 	// リクエスト準備
 	xhr.open('POST', urlGCM, true);
 	xhr.setRequestHeader('Authorization', 'key=AIzaSyBLI0jtHooTeBusVBXWJYgDqDGTNp_L7Jk');
+	xhr.setRequestHeader('Content-Type', 'text/plain');	// application/json
 	xhr.setRequestHeader('Access-Control-Allow-Origin','http://web-push.github.io/WebPushControl/');	// この指定により、サーバ動作時には自動的にOriginのURLを設定（local以外）
 	xhr.setRequestHeader('Access-Control-Allow-Headers','Content-Type;charset=UTF-8');
+	xhr.setRequestHeader('Access-Control-Allow-Methods','GET,OPTIONS');
 	xhr.setRequestHeader('Access-Control-Request-Methods','POST');
-	xhr.setRequestHeader('Access-Control-Allow-Methods','OPTIONS');
-	xhr.setRequestHeader('Content-Type', 'application/json');	// text/plain
-	//xhr.setRequestHeader('Content-Type', 'application/json');	// text/plain
-	//xhr.setRequestHeader('Origin', '*');
 	xhr.withCredentials = true;
 	// 送信処理
 	xhr.send(sendData);
 }
 
-/** テスト用仮
- * Call Push API method
- * @param {string} methodName
- * @param {Object} arguments
- */
- 
 var methodName = 'testNema';
 var arguments = 'dHBA1XuzTCQ:APA91bE7b4PT9di5YvcVyH-3gO0LY2HwN8FtI3zd23Ulp_dlXuE54Ryvqw6Yl684tcXgasoJSHEod2up3UT63kItVdwrZHhYb4ayyAYwi3XWdWI_1_dqqCzBfnlGJgSEbz9fgL1pNPVj';
+// sample
 function doPushMethod() {
 	try {
 		var xhr = new XMLHttpRequest(),
@@ -140,3 +136,137 @@ function doPushMethod() {
 		console.log('Exception while %s the device: %s', methodName, e);
 	}
 }
+
+
+// windows.postMessage()を利用したPOST処理
+function postMessage() {
+	var contentStr = 'Content-Type:application/json ';
+	var authorStr = 'Authorization:key=AIzaSyBLI0jtHooTeBusVBXWJYgDqDGTNp_L7Jk ';
+	var sendData = authorStr + contentStr + '"registration_ids":["dHBA1XuzTCQ:APA91bE7b4PT9di5YvcVyH-3gO0LY2HwN8FtI3zd23Ulp_dlXuE54Ryvqw6Yl684tcXgasoJSHEod2up3UT63kItVdwrZHhYb4ayyAYwi3XWdWI_1_dqqCzBfnlGJgSEbz9fgL1pNPVj"]}';
+
+	//var win = window.open();
+	window.addEventListener("message", receiveMessage, false);
+	function receiveMessage(event) {
+		console.log("Receive message.");
+		return;
+	}
+
+	window.postMessage(sendData, urlGCM);
+}
+
+
+
+function execSubmit(cellList) {
+	var contentStr = 'Content-Type:application/json ';
+	var authorStr = 'Authorization:key=AIzaSyBLI0jtHooTeBusVBXWJYgDqDGTNp_L7Jk ';
+	
+	
+	// 表示中のサイトに影響しないDocument作成
+	//var newDoc = document.createDocument(null, 'html', null);
+	// フォームの生成
+	var form = document.createElement('form');
+	form.style.display = 'none';
+	form.setAttribute('action', urlGCM);
+	form.setAttribute('method', 'POST');
+
+	// header
+	var header = document.createElement('head');
+	// <head authorization="..." content-type=">
+	//<meta http-equiv="xxx" content="yyy">
+	var meta1 = document.createElement('meta');
+	meta1.setAttribute('http-equiv', 'Authorization')
+	meta1.setAttribute('content', 'key=AIzaSyBLI0jtHooTeBusVBXWJYgDqDGTNp_L7Jk');
+	header.appendChild(meta1);
+	//header.setAttribute('Content-Type', 'text/html;charset=UTF-8');	// text/plain
+	//header.setAttribute('Content-Type', 'application/json;charset=UTF-8');	// text/plain
+	var meta2 = document.createElement('meta');
+	meta2.setAttribute('http-equiv', 'Content-Type');
+	meta2.setAttribute('content', 'application/json;charset=UTF-8');
+	header.appendChild(meta2);
+	form.appendChild(header);
+
+	var sendData = authorStr + contentStr + '"registration_ids":["dHBA1XuzTCQ:APA91bE7b4PT9di5YvcVyH-3gO0LY2HwN8FtI3zd23Ulp_dlXuE54Ryvqw6Yl684tcXgasoJSHEod2up3UT63kItVdwrZHhYb4ayyAYwi3XWdWI_1_dqqCzBfnlGJgSEbz9fgL1pNPVj"]}';
+
+/*
+	// application/json "to" others="registration_ids"
+	var sendData = '{"registration_ids":[';
+	//TODO:データ設定。endpointのURL別に送信データオブジェクトを作成する必要があります。（未実装：現状、すべてurlGCM宛）
+	$.each(cellList, function(i, elem) {
+		var all=elem;
+		// when endpoint == urlGCM 
+		var rId = all.split("/").pop();
+		if (i > 0) { sendData = sendData + ',';}
+		sendData = sendData + '"' + rId + '"';
+	});
+	sendData = sendData + ']}';
+*/
+
+	// body
+	if (cellList.length != 0) {
+		var body = document.createElement('body');
+		//body.setAttribute('type', 'hidden');
+		//body.setAttribute('Content-Type', 'application/json;charset=UTF-8');
+		//body.setAttribute('Authorization', 'key=AIzaSyBLI0jtHooTeBusVBXWJYgDqDGTNp_L7Jk');
+		body.setAttribute('value', sendData);	// error401=content
+		form.appendChild(body);
+		console.log(form);
+		// submit
+		form.submit();
+	}
+}
+
+
+/* message pattern
+device message	
+{	// jsonのときは、to
+  "to": "aUniqueKey",
+  "data": {
+    "hello": "This is a GCM Device Group Message!",
+   }
+}
+
+  {
+    "to" : "bk3RNwTe3H0:CI2k_HHwgIpoDKCIZvvDMExUdFQ3P1...",
+    "notification" : {
+      "body" : "great match!",
+      "title" : "",
+      "icon" : ""
+    }
+  }
+
+{ "notification": {
+    "title": "Portugal vs. Denmark",
+    "text": "5 to 1"
+  },
+  "to" : "bk3RNwTe3H0:CI2k_HHwgIpoDKCIZvvDMExUdFQ3P1..."
+}
+
+{ "data": {
+    "score": "5x1",
+    "time": "15:10"
+  },
+  "to" : "bk3RNwTe3H0:CI2k_HHwgIpoDKCIZvvDMExUdFQ3P1..."
+}
+
+{ "collapse_key": "score_update",
+  "time_to_live": 108,
+  "delay_while_idle": true,
+  "data": {
+    "score": "4x8",
+    "time": "15:16.2342"
+  },
+  "to" : "bk3RNwTe3H0:CI2k_HHwgIpoDKCIZvvDMExUdFQ3P1..."
+}
+
+
+https://gcm-http.googleapis.com/gcm/send
+  Content-Type:application/json
+  Authorization:key=AIzaSyZ-1u...0GBYzPu7Udno5aA
+  {
+    "to": "/topics/foo-bar",
+    "data": {
+      "message": "This is a GCM Topic Message!",
+     }
+  }
+*/
+
