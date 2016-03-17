@@ -270,3 +270,26 @@ https://gcm-http.googleapis.com/gcm/send
   }
 */
 
+
+
+function messagePush(dataList) {
+	let projectId = 'AIzaSyBLI0jtHooTeBusVBXWJYgDqDGTNp_L7Jk';
+
+	fetch('https://android.googleapis.com/gcm/send', {
+		method: 'post',
+		headers: {
+			'Content-Type': 'application/json',
+			'Authorization': 'key=AIzaSyBLI0jtHooTeBusVBXWJYgDqDGTNp_L7Jk' // ここは 'key=${projectId}' こんな感じで↑から値を引っ張ってきたかったけどうまくいかなかったから直値で妥協
+		},
+		body: JSON.stringify({
+			registration_ids: dataList
+      }),
+		credentials: 'cors'
+	}).then(response => {
+		console.log(response);
+	}).catch(error => {
+		console.error(error);
+	});
+}
+
+

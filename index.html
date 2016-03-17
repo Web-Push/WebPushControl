@@ -71,12 +71,15 @@ jQuery(document).ready(
 			var cellList = new Array();
 			for (var i = 0; i < selrows.length; i++) {
 				var row = $('#idTable2').getRowData(selrows[i]);
-				cellList.push(row.endpoint);
+				// 余分な情報は削除してからListに積み込む
+				cellList.push(row.endpoint.replace('https://android.googleapis.com/gcm/send/', ''));
+				console.log(row.endpoint);
 			}
 			//confirm(cellList);
 			if (cellList.length > 0) {
+				messagePush(cellList);
 				//postMessage();
-				execSubmit(cellList);
+				//execSubmit(cellList);
 				//postRequest(cellList);
 				//doPushMethod();
 			}
@@ -200,7 +203,6 @@ function setTable(dataList) {
 	return jg;
 }
 
-
 </script>
 
 </head>
@@ -228,8 +230,7 @@ function setTable(dataList) {
 		
 
 		<input id="push-sel-rows" class="push_cls" type="button" value ="Done"><div></div></input>
-
-		<!-- input id="info-rows" class="info-cls" type="button" value ="Info"><div></div></input -->
+		
 		
 		<hr />
 
