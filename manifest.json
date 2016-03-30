@@ -11,7 +11,7 @@
   }],
   "start_url": "./index.html",
   "display": "standalone",
-  "gcm_sender_id": "621173627185",	// project number
+  "gcm_sender_id": "621173627185"	// project number
   // "gcm_user_visible_only": true	// for old version
 }
 
