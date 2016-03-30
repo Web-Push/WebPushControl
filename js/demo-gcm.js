@@ -273,7 +273,6 @@ https://gcm-http.googleapis.com/gcm/send
 
 
 function messagePush(dataList) {
-	let projectId = 'AIzaSyBLI0jtHooTeBusVBXWJYgDqDGTNp_L7Jk';
 
 	fetch('https://android.googleapis.com/gcm/send', {
 		method: 'post',
