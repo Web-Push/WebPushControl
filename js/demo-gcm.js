@@ -284,9 +284,9 @@ function messagePush(dataList) {
 			registration_ids: dataList
       }),
 		credentials: 'cors'
-	}).then(response => {
+	}).then(function(response) {
 		console.log(response);
-	}).catch(error => {
+	}).catch(function(error) {
 		console.error(error);
 	});
 }
