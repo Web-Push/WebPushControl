@@ -4,7 +4,7 @@
     {"user_id":"bbb","service_url":"https://web-push.github.io/k_y_test/"},
     {"user_id":"太郎","service_url":"https://web-push.github.io/service_c/"},
     {"user_id":"次郎","service_url":"https://web-push.github.io/service_c/"},
-    {"user_id":"三郎","service_url":"https://web-push.github.io/service_c/"}
+    {"user_id":"三郎","service_url":"https://web-push.github.io/service_c/"},
     {"user_id":"abc","service_url":"https://web-push-alt.github.io/service_d/"}
   ]
 }
