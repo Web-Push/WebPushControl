@@ -282,7 +282,7 @@ function messagePush(dataList) {
 		},
 		body: JSON.stringify({
 			time_to_live: 10,
-			registration_ids: dataList,
+			registration_ids: dataList
                 }),
 		credentials: 'cors'
 	}).then(function(response) {
