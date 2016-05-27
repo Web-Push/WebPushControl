@@ -281,7 +281,7 @@ function messagePush(dataList) {
 			'Authorization': 'key=AIzaSyBLI0jtHooTeBusVBXWJYgDqDGTNp_L7Jk' // ここは 'key=${projectId}' こんな感じで↑から値を引っ張ってきたかったけどうまくいかなかったから直値で妥協
 		},
 		body: JSON.stringify({
-			time_to_live: 10,
+			//time_to_live: 10,
 			registration_ids: dataList
                 }),
 		credentials: 'cors'
